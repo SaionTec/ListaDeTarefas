@@ -1,4 +1,8 @@
 # ListaDeTarefas
+
+
+![image](https://github.com/user-attachments/assets/18739fac-1975-433a-a8f9-a30b30649b8a)
+
 Aplicação web para gerenciamento de tarefas, permitindo adicionar, marcar como concluídas e remover atividades com armazenamento local.
 📋 Lista de Tarefas - To-Do List
 💡 Objetivo
