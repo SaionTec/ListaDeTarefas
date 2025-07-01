@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Tarefas</title>
+  <style>
+    body {
+      padding-top: 190px;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-image: url(back.jpg);
+      background-size: 1090px;
+      background-position: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #0f0e0e;
+    }
+
+    #taskContainer {
+      width: 60%;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 10px;
+    }
+
+    .completed {
+      text-decoration: line-through;
+      color: #888;
+    }
+
+    button {
+      margin-left: 10px;
+      padding: 5px;
+      cursor: pointer;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+    }
+
+    input[type="text"] {
+      padding: 5px;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div id="taskContainer">
+    <h1>Lista de Tarefas</h1>
+    <ul id="taskList"></ul>
+    <input type="text" id="newTask" placeholder="Nova tarefa">
+    <button onclick="addTask()">Adicionar Tarefa</button>
+    <button onclick="clearTasks()">Limpar Tarefas Concluídas</button>
+  </div>
+
+  <script>
+    function addTask() {
+      var taskText = document.getElementById("newTask").value;
+
+      if (taskText.trim() !== "") {
+        var tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        tasks.push({ text: taskText, completed: false });
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+        displayTasks();
+      }
+
+      document.getElementById("newTask").value = "";
+    }
+
+    function displayTasks() {
+      var tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      var taskList = document.getElementById("taskList");
+      taskList.innerHTML = "";
+
+      tasks.forEach(function(task, index) {
+        var li = document.createElement("li");
+
+        // Caixa de seleção
+        var checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = task.completed;
+        checkbox.onchange = function() {
+          tasks[index].completed = checkbox.checked;
+          localStorage.setItem("tasks", JSON.stringify(tasks));
+          displayTasks();
+        };
+
+        // Texto da tarefa
+        var taskText = document.createElement("span");
+        taskText.textContent = task.text;
+        if (task.completed) {
+          taskText.classList.add("completed");
+        }
+
+        // Botão de remover
+        var removeButton = document.createElement("button");
+        removeButton.textContent = "Remover";
+        removeButton.onclick = function() {
+          removeTask(index);
+        };
+
+        li.appendChild(checkbox);
+        li.appendChild(taskText);
+        li.appendChild(removeButton);
+        taskList.appendChild(li);
+      });
+    }
+
+    function removeTask(index) {
+      var tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      tasks.splice(index, 1);
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+      displayTasks();
+    }
+
+    function clearTasks() {
+      var tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      var remainingTasks = tasks.filter(function(task) {
+        return !task.completed;
+      });
+      localStorage.setItem("tasks", JSON.stringify(remainingTasks));
+      displayTasks();
+    }
+
+    // Inicializa lista
+    displayTasks();
+  </script>
+</body>
+</html>
